@@ -19,23 +19,45 @@ class TextReader:
             lines = lines.strip("\n");
             self.image_path.append(lines);
         f.close();
-    def get_box(self, img):
+    def get_box(self, img, leng):
         imggray = cv2.cvtColor(img,cv2.COLOR_RGB2GRAY);
         imgfloat = imggray.astype(np.float);
         colimg = np.sum(imgfloat,0);
         colimg = colimg - np.min(colimg);
         rowimg = np.sum(imgfloat,1);
         rowimg = rowimg - np.min(rowimg);
-        for i in range(0, rowimg.shape[0]):
-            if rowimg[i,0] >= 10:
+        self.rowstart = [];
+        self.rowend = [];
+        self.colstart = [];
+        self.colend = [];
+        th = 10;
+        for i in range(0, rowimg.shape[0]-1):
+            if rowimg[i] <= th and rowimg[i+1] >= th:
+                self.rowstart.append(i);
+            if rowimg[i] >= th and rowimg[i+1] <= th:
+                self.rowend.append(i);
                 
+        for i in range(0, colimg.shape[0]-1):
+            if colimg[i] <= th and colimg[i+1] >= th:
+                self.colstart.append(i);
+            if colimg[i] >= th and colimg[i+1] <= th:
+                self.colend.append(i);
                 
 
-        cv2.imshow("src",imggray);
+
+        self.box = [];
+
+        if len(self.colstart) <=0 or len(self.rowstart) <=0:
+            return;
+        
+        x0 = min(self.colstart);
+        x1 = max(self.colend);
+        per = float(x1-x0)/leng;
+        for i in range(0,leng):
+            self.box.append([self.colstart[0] + int(i*per), self.rowstart[0], self.colstart[0] + int((i+1)*per), self.rowend[0]]);
+            
         #np.savetxt("row.txt",rowimg);
         #np.savetxt("col.txt",colimg);
-        
-        
-        cv2.waitKey(0);
+
         
         
