@@ -8,21 +8,8 @@ import cv2
 reader = TextReader.TextReader();
 reader.read("atoms.txt");
 reader.read_background_image("back.txt");
-
-
-#f=open("atoms.txt")
-
-#for lines in f:
-#    lines=lines.rstrip("\n")
-#    atoms.append(lines);
-#f.close();
-
-
-
-#text="ABC"
 fonts=['songti.TTF'];
 cnt = 0;
-#ff = open("position.txt","w")
 height = 224;
 width = 1000;
 font_size = 40;
@@ -37,10 +24,6 @@ for i in range(0,len(reader.atoms)):
 
         dx = random.randint(0,w-width);
         dy = random.randint(0,h-height);
-
-
-
-
 
         img = image.crop((dx, dy, dx+width, dy+height));
         dr=ImageDraw.Draw(label);
@@ -66,7 +49,6 @@ for i in range(0,len(reader.atoms)):
             cv2.rectangle(im_show,(reader.box[i][0],reader.box[i][1]),(reader.box[i][2],reader.box[i][3]),(255,0,0), 2);
         #cv2.imshow("src",im_show);
         cv2.imwrite("pixels/%d.png"%cnt, im_show);
-
         img.save("images/%d.jpg"%cnt);
         f = open("labels/%d.txt"%cnt,"w");
         for i in range(0,len(reader.box)):
@@ -74,14 +56,10 @@ for i in range(0,len(reader.atoms)):
            yc = (float(reader.box[i][1]) + float(reader.box[i][3]))/(2.0*float(height));
            w = (-float(reader.box[i][0]) + float(reader.box[i][2]))/float(width);
            h = (-float(reader.box[i][1]) + float(reader.box[i][3]))/float(height);
-
-
-
            x0 = reader.box[i][0];
            y0 = reader.box[i][1];
            x1 = reader.box[i][2];
            y1 = reader.box[i][3];
-
            f.write("%d %d %d %d\n"%(x0,y0,x1,y1));
         f.close();
 
